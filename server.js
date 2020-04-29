@@ -4,12 +4,25 @@ var express     = require('express');
 var bodyParser  = require('body-parser');
 var expect      = require('chai').expect;
 var cors        = require('cors');
+var helmet      = require('helmet');
 
 var apiRoutes         = require('./routes/api.js');
 var fccTestingRoutes  = require('./routes/fcctesting.js');
 var runner            = require('./test-runner');
 
 var app = express();
+
+app.use(helmet({
+  frameguard: {              // disallow iframes in external site
+    action: 'deny'
+  },
+  // contentSecurityPolicy: {   // sources only from this site
+  //  directives: {
+  //    defaultSrc: ["'self'"],
+  //  }
+  // },
+ dnsPrefetchControl: false   // disabe dns prefetching
+}))
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
